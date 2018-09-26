@@ -1,0 +1,19 @@
+hackernews
+    
+    news
+    [
+
+        {
+            title : 'title goes here' ,
+            link : 'link goes here',
+            author : 'author goes here',
+
+            notes : [
+                {
+                    author: 'author goes here',
+                    body: 'the comment goes here'
+                }
+            ]
+        }
+
+    ]
