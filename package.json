@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/kjonathante/HW-14-MongoDB-Express-Webscraping#readme",
   "dependencies": {
-    "mongojs": "^2.6.0"
+    "cheerio": "^1.0.0-rc.2",
+    "mongojs": "^2.6.0",
+    "request": "^2.88.0"
   }
 }
