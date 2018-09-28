@@ -20,7 +20,6 @@ function saveStory( db, story ) {
           return reject(error)
         }
 
-        console.log('[Inside UPDATE #1]', value)
         return resolve()
       }
     )
@@ -72,7 +71,7 @@ function saveComment( db, id, comment ) {
         { comments: 
           {
             _id: mongojs.ObjectId(),
-            user: 'anonymous',
+            user: 'anonymous', // TODO
             comment: comment
           }
         }
@@ -83,7 +82,6 @@ function saveComment( db, id, comment ) {
           return reject(error)
         }
 
-        console.log('[Inside UPDATE #3]', value)
         return resolve(value)
       }
     )
@@ -107,10 +105,10 @@ function deleteComment(db, storyId, commentId) {
           return reject(error)
         }
 
-        console.log('[Inside Pull]', value)
         return resolve(value)
       }
     )
   })
 }
+
 module.exports = { saveAll, getAll, get, saveComment, deleteComment }

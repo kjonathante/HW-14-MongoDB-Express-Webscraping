@@ -18,26 +18,30 @@ db.on('error', function(error){
 // Initialize Express
 var app = express()
 
-// Set up a static folder (public) for our web app
+// Set up a static folder
 app.use(express.static(path.join(__dirname, './src/public')))
-
+// request.body parser
 app.use(express.urlencoded({extended: true}))
 
+// endpoint to start webscraping and returning all the stories
 app.get('/news', async function(req, res) {
-  // var stories = await webscrape()
-  // storyModel.saveAll(db, stories)
+  var stories = await webscrape()
+  storyModel.saveAll(db, stories)
   res.json(await storyModel.getAll(db))
 })
 
+// endpoint to READ a story
 app.get('/story/:id', async function(req, res) {
  res.json(await storyModel.get(db, req.params.id))
 })
 
+// endpoint to CREATE a story's comment
 app.post('/comment/:id', async function(req, res) {
   // console.log(req.body.comment, req.params.id)
   res.json(await storyModel.saveComment(db, req.params.id, req.body.comment))
 })
 
+// endpoint to DELETE a story's comment
 app.delete('/comment/:id', async function(req, res) {
   // console.log(req.body.comment, req.params.id)
   res.json(await storyModel.deleteComment(db, req.params.id, req.body.commentId))
