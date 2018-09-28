@@ -1,3 +1,5 @@
+var mongojs = require('mongojs')
+
 function saveStory( db, story ) {
   return new Promise(function(resolve,reject) {
     db.news.update(
@@ -47,4 +49,44 @@ function getAll( db ) {
   })
 }
 
-module.exports = { saveAll, getAll }
+function get( db, id ) {
+  return new Promise(function(resolve,reject) {
+    db.news.findOne(
+      {_id: mongojs.ObjectId(id)},
+      function(error,value){
+        if (error) {
+          console.log(error)
+          return reject(error)
+        }
+        return resolve(value)
+      })
+    }
+  )
+}
+
+function saveComment( db, id, comment ) {
+  return new Promise(function(resolve,reject) {
+    db.news.update(
+      {_id: mongojs.ObjectID(id)},  
+      { $push: 
+        { comments: 
+          {
+            _id: mongojs.ObjectId(),
+            user: 'anonymous',
+            comment: comment
+          }
+        }
+      },
+      function(error, value){
+        if (error) {
+          console.log(error)
+          return reject(error)
+        }
+
+        console.log('[Inside UPDATE #3]', value)
+        return resolve(value)
+      }
+    )
+  })  
+}
+module.exports = { saveAll, getAll, get, saveComment }
