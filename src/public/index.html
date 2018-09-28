@@ -7,6 +7,105 @@
   <title>News</title>
 </head>
 <body>
-  hqllo
+  <div id="root"></div>
+<script src="jquery-3.3.1.min.js"></script>
+<script>
+  getNews()
+
+  function getNews() {
+    $.ajax({
+      url: '/news'
+    }).then( 
+      function(data){
+        for(var story of data) {
+          var div = $('<div>')
+
+          var div1 = $('<div>')
+          var h2 = $('<h2>').text(story.headline)
+          var p = $('<p>').text(story.summary)
+          div1.append(h2,p)
+
+          var div2 = $('<div>')
+          var image = $('<img>').attr('src',story.image)
+          var aTag = $('<a>').attr('href','/story/' + story._id).text('come here')
+            .addClass('link').attr('data-story-id', story._id)
+          div2.append(image, aTag)
+
+          div.append(div1,div2)
+          $('#root').append(div)  
+        }
+      },
+      function(jqXHR, textStatus,errorThrown){
+
+      }
+    )
+  }
+  function getStory(id) {
+    $.ajax({
+      url: '/story/'+id
+    }).then( 
+      function(story){
+        console.log(story)
+        var div = $('<div>')
+
+        var div1 = $('<div>')
+        var h2 = $('<h2>').text(story.headline)
+        var p = $('<p>').text(story.summary)
+        div1.append(h2,p)
+
+        var div2 = $('<div>')
+        var image = $('<img>').attr('src',story.image)
+        div2.append(image)
+
+        var div3 = $('<div>')
+        for(var comment of story.comments) {
+          var pComment = $('<p>').text(comment.comment)
+          div3.append(pComment)
+        }
+          
+        var div4 = $('<div>')
+        var textarea = $('<textarea>').attr('id', 'comment')
+        var button = $('<button>').text('Submit').attr({'id':'commentBtn', 'data-story-id': id})
+        div4.append(textarea,button)
+
+        div.append(div1,div2,div3,div4)
+        $('#root').empty().append(div)  
+      },
+      function(jqXHR, textStatus,errorThrown){
+
+      }
+    )
+  }
+
+  function saveComment(id, comment) {
+    $.ajax({
+      url: '/comment/'+id,
+      method: 'POST',
+      data: {comment: comment}
+    }).then( 
+      function(story){
+        console.log( 'Calling getStory', id)
+        getStory(id)
+      },
+      function(jqXHR, textStatus,errorThrown){
+      }
+    )
+  }
+
+  $(document).on('click', '.link', function(event){
+    event.preventDefault()
+    console.log(this.dataset.storyId)
+    getStory( this.dataset.storyId )
+    history.pushState({index: 'story'},this.dataset.storyId,this.dataset.storyId)
+  })
+
+  $(document).on('click', '#commentBtn', function(event){
+    event.preventDefault()
+    saveComment(this.dataset.storyId, $('#comment').val())
+    // console.log(this.dataset.storyId)
+    // console.log($('#comment').val())
+  })
+</script>
 </body>
+
 </html>
