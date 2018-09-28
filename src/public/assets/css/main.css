@@ -1,0 +1,81 @@
+#homework {
+  text-align: center;
+  border-bottom: 2px solid lightgray;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+}
+
+#homework h1 {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  margin: 4px;
+}
+
+#root{
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+.media {
+  display: flex;
+  align-items: flex-start;
+}
+.media .content {
+  flex: 1;
+  padding: 0 10px;
+}
+.media .content h2 {
+  margin-top: 0;
+}
+.media .image {
+  padding-top: 10px;
+}
+
+.source {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: .4rem;
+  margin-top: -10px;
+}
+
+#back {
+  padding-bottom: 20px;
+}
+
+#comment {
+  width: 100%;
+}
+
+.comment-owner {
+  font-weight: bold;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+
+a:link {
+
+}
+
+a:visited {
+
+}
+
+a:focus {
+
+}
+
+a:hover {
+
+}
+
+a:active {
+
+}
+
+@media (min-width: 640px) {
+  #root {
+    width: 500px;
+  }
+}

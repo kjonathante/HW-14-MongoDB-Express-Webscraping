@@ -89,4 +89,28 @@ function saveComment( db, id, comment ) {
     )
   })  
 }
-module.exports = { saveAll, getAll, get, saveComment }
+
+function deleteComment(db, storyId, commentId) {
+  return new Promise(function(resolve,reject) {
+    db.news.update(
+      {_id: mongojs.ObjectId(storyId)},  
+      { $pull: 
+        { comments: 
+          {
+            _id: mongojs.ObjectId(commentId)
+          }
+        }
+      },
+      function(error, value){
+        if (error) {
+          console.log(error)
+          return reject(error)
+        }
+
+        console.log('[Inside Pull]', value)
+        return resolve(value)
+      }
+    )
+  })
+}
+module.exports = { saveAll, getAll, get, saveComment, deleteComment }

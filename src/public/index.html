@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>News</title>
+  <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
+  <div id="homework">
+    <h1>MongoDB and Webscraping</h1>
+  </div>
   <div id="root"></div>
 <script src="jquery-3.3.1.min.js"></script>
 <script>
@@ -18,21 +22,24 @@
     }).then( 
       function(data){
         for(var story of data) {
-          var div = $('<div>')
 
-          var div1 = $('<div>')
+          var aTag = $('<a>').attr('href','/story/' + story._id)
+            .addClass('link').attr('data-story-id', story._id)
+
+          var div = $('<div>').addClass('media')
+
+          var div1 = $('<div>').addClass('content')
           var h2 = $('<h2>').text(story.headline)
           var p = $('<p>').text(story.summary)
           div1.append(h2,p)
 
-          var div2 = $('<div>')
+          var div2 = $('<div>').addClass('image')
           var image = $('<img>').attr('src',story.image)
-          var aTag = $('<a>').attr('href','/story/' + story._id).text('come here')
-            .addClass('link').attr('data-story-id', story._id)
-          div2.append(image, aTag)
+          div2.append(image)
 
           div.append(div1,div2)
-          $('#root').append(div)  
+          aTag.append(div)
+          $('#root').append(aTag)  
         }
       },
       function(jqXHR, textStatus,errorThrown){
@@ -40,36 +47,55 @@
       }
     )
   }
+
   function getStory(id) {
     $.ajax({
       url: '/story/'+id
     }).then( 
       function(story){
         console.log(story)
-        var div = $('<div>')
 
-        var div1 = $('<div>')
+        var nav = $('<div>').attr('id', 'back')
+        var back = $('<a>').html('&#x21A9').attr('href','/')
+        nav.append(back)
+
+        var div = $('<div>').addClass('media')
+
+        var div1 = $('<div>').addClass('content')
         var h2 = $('<h2>').text(story.headline)
         var p = $('<p>').text(story.summary)
         div1.append(h2,p)
 
-        var div2 = $('<div>')
+        var div2 = $('<div>').addClass('image')
         var image = $('<img>').attr('src',story.image)
         div2.append(image)
 
-        var div3 = $('<div>')
-        for(var comment of story.comments) {
-          var pComment = $('<p>').text(comment.comment)
-          div3.append(pComment)
-        }
-          
-        var div4 = $('<div>')
-        var textarea = $('<textarea>').attr('id', 'comment')
-        var button = $('<button>').text('Submit').attr({'id':'commentBtn', 'data-story-id': id})
-        div4.append(textarea,button)
+        var sourcediv = $('<div>').addClass('source')
+        var source = $('<a>').attr('href',story.url).text(story.url)
+        sourcediv.append(source)
 
-        div.append(div1,div2,div3,div4)
-        $('#root').empty().append(div)  
+          
+        var div3 = $('<div>').addClass('commentDiv')
+        var h2Comments = $('<h2>').text('Comments')
+        var textarea = $('<textarea>').attr({id: 'comment', placeholder: 'Write your comment here'})
+        var button = $('<button>').text('Submit').attr({'id':'commentBtn', 'data-story-id': id})
+        div3.append(h2Comments,textarea,button)
+
+
+        var div4 = $('<div>')
+        if (story.comments != undefined) {
+          for(var comment of story.comments) {
+            var hr = $('<hr>')
+            var pUser = $('<p>').text(comment.user).addClass('comment-owner')
+            var pComment = $('<p>').text(comment.comment)
+            var delBtn = $('<button>').text('Delete This').addClass('delBtn')
+              .attr({'data-story-id':id, 'data-comment-id':comment._id})
+            div4.append(hr,pUser,pComment,delBtn)
+          }
+        }
+
+        div.append(div1,div2)
+        $('#root').empty().append(nav,div,sourcediv,div3,div4)  
       },
       function(jqXHR, textStatus,errorThrown){
 
@@ -92,11 +118,25 @@
     )
   }
 
+  function deleteComment(storyId, commentId) {
+    $.ajax({
+      url: '/comment/'+storyId,
+      method: 'DELETE',
+      data: {commentId: commentId}
+    }).then( 
+      function(story){
+        console.log( 'Calling getStory', storyId)
+        getStory(storyId)
+      },
+      function(jqXHR, textStatus,errorThrown){
+      }
+    )
+  }
+
   $(document).on('click', '.link', function(event){
     event.preventDefault()
-    console.log(this.dataset.storyId)
     getStory( this.dataset.storyId )
-    history.pushState({index: 'story'},this.dataset.storyId,this.dataset.storyId)
+    // history.pushState({index: 'story'},this.dataset.storyId,this.dataset.storyId)
   })
 
   $(document).on('click', '#commentBtn', function(event){
@@ -104,6 +144,12 @@
     saveComment(this.dataset.storyId, $('#comment').val())
     // console.log(this.dataset.storyId)
     // console.log($('#comment').val())
+  })
+
+  $(document).on('click', '.delBtn', function(event){
+    event.preventDefault()
+    deleteComment(this.dataset.storyId, this.dataset.commentId)
+    // console.log( this.dataset.storyId, this.dataset.commentId )
   })
 </script>
 </body>

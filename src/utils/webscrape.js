@@ -16,7 +16,7 @@ function webscrape() {
         stories.push( {
           storyid: $(element).attr('id'),
           headline: $(element).find('article > div > a > div.story-meta > h2').text().trim(),
-          summary: $(element).find('article > div > a > div.story-meta > p').text().trim(),
+          summary: $(element).find('article > div > a > div.story-meta > p.summary').text().trim(),
           url: $(element).find('article > div > a').attr('href'),
           image: $(element).find('article > div > a > div.wide-thumb > img').attr('src')
         } )
